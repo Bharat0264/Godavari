@@ -1,0 +1,8 @@
+{
+  "name": "godavari-spice-of-andhra",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": { "dev": "node server.js", "start": "node server.js", "vercel:dev": "vercel dev" },
+  "dependencies": { "mongodb": "^6.8.0" },
+  "devDependencies": { "vercel": "^35.2.0" }
+}
