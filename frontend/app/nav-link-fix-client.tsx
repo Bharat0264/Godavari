@@ -1,0 +1,1 @@
+'use client';import {useEffect} from 'react';export default function NavLinkFix(){useEffect(()=>{const go=(event:MouseEvent)=>{const target=(event.target as Element).closest('a[href="#orders"]');if(target){event.preventDefault();window.location.assign('/orders')}};document.addEventListener('click',go);return()=>document.removeEventListener('click',go)},[]);return null}

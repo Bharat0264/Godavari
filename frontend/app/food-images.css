@@ -1,0 +1,1 @@
+.table-row:before{content:''!important;background:linear-gradient(#0002,#0002),var(--dish-image)!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important;font-size:0!important}

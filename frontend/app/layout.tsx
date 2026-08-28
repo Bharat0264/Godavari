@@ -1,4 +1,3 @@
-import type { Metadata } from 'next';
-import './globals.css';
+import type { Metadata } from 'next';import NavLinkFix from './nav-link-fix-client';import RiderApprovalControl from './rider-approval-control';import './globals.css';import './checkout/checkout.css';import './admin/admin.css';import './table.css';import './availability.css';import './cards.css';import './food-images.css';import './no-food-images.css';import './orders-modal.css';import './settings-form.css';
 export const metadata: Metadata={title:'Godavari — Spice of Andhra',description:'Authentic Andhra food, delivered warm.'};
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}</body></html>}
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}<NavLinkFix/><RiderApprovalControl/></body></html>}
