@@ -1,7 +1,8 @@
-const {createClient}=require('@supabase/supabase-js');
+const jwt=require('jsonwebtoken');
 const {Profile}=require('./models');
-const supabase=process.env.SUPABASE_URL&&process.env.SUPABASE_SERVICE_ROLE_KEY?createClient(process.env.SUPABASE_URL,process.env.SUPABASE_SERVICE_ROLE_KEY):null;
-const roles={OWNER:['*'],OPERATIONS:['orders','menu','riders','settings'],KITCHEN:['orders'],ACCOUNTANT:['financials'],SUPPORT:['orders','customers'],RIDER:['rider']};
-async function auth(req,res,next){const token=req.headers.authorization?.replace('Bearer ','');if(!token||!supabase)return res.status(401).json({error:'Authentication required'});const {data,error}=await supabase.auth.getUser(token);if(error||!data.user)return res.status(401).json({error:'Invalid session'});const profile=await Profile.findOne({$or:[{supabaseId:data.user.id},{email:data.user.email}]});if(profile&&!profile.supabaseId)await Profile.updateOne({_id:profile._id},{$set:{supabaseId:data.user.id}});const admins=(process.env.ADMIN_EMAILS||'').split(',').map(x=>x.trim().toLowerCase());const role=admins.includes(String(data.user.email).toLowerCase())?'OWNER':profile?.role||'CUSTOMER';if(profile&&profile.role!==role)await Profile.updateOne({_id:profile._id},{$set:{role}});req.user={id:data.user.id,email:data.user.email,role};next()}
-function permit(scope){return(req,res,next)=>{const allowed=roles[req.user?.role]||[];return allowed.includes('*')||allowed.includes(scope)?next():res.status(403).json({error:'Insufficient permissions'})}}
-module.exports={auth,permit,roles};
+const roles={OWNER:['*'],OPERATIONS:['orders','menu','settings','admins'],CUSTOMER:[]};
+const secret=()=>process.env.JWT_SECRET;
+function issue(profile){if(!secret())throw new Error('JWT_SECRET is not configured');return jwt.sign({sub:String(profile._id),role:profile.role},secret(),{expiresIn:'30d'});}
+async function auth(req,res,next){try{const token=req.headers.authorization?.replace(/^Bearer\s+/i,'');if(!token)return res.status(401).json({error:'Please sign in to continue'});const payload=jwt.verify(token,secret());const profile=await Profile.findById(payload.sub);if(!profile)return res.status(401).json({error:'Account not found'});req.user={id:String(profile._id),role:profile.role,fullName:profile.fullName,mobile:profile.mobile};next();}catch{return res.status(401).json({error:'Your sign-in has expired. Please sign in again.'})}}
+function permit(scope){return(req,res,next)=>{const allowed=roles[req.user?.role]||[];return allowed.includes('*')||allowed.includes(scope)?next():res.status(403).json({error:'Restaurant access is required'})}}
+module.exports={auth,permit,issue};

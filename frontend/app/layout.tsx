@@ -1,3 +1,6 @@
-import type { Metadata } from 'next';import NavLinkFix from './nav-link-fix-client';import RiderApprovalControl from './rider-approval-control';import CheckoutLoginGate from './checkout-login-gate';import ProfileCheckoutPrefill from './profile-checkout-prefill';import './globals.css';import './checkout/checkout.css';import './admin/admin.css';import './table.css';import './availability.css';import './cards.css';import './food-images.css';import './no-food-images.css';import './orders-modal.css';import './settings-form.css';
-export const metadata: Metadata={title:'Godavari — Spice of Andhra',description:'Authentic Andhra food, delivered warm.'};
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}<NavLinkFix/><RiderApprovalControl/><CheckoutLoginGate/><ProfileCheckoutPrefill/></body></html>}
+import type {Metadata} from 'next';
+import NavLinkFix from './nav-link-fix-client';
+import LoginGate from './login-gate';
+import './globals.css';import './checkout/checkout.css';import './admin/admin.css';import './table.css';import './cards.css';import './no-food-images.css';import './settings-form.css';
+export const metadata:Metadata={title:'Godavari — Spice of Andhra',description:'Authentic Andhra food, delivered warm.'};
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}<NavLinkFix/><LoginGate/></body></html>}
